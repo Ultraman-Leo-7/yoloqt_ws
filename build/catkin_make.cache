@@ -1,0 +1,2 @@
+yolov8qt
+-G CodeBlocks - Unix Makefiles -DCMAKE_BUILD_TYPE=Release -DCATKIN_DEVEL_PREFIX=/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel -DCMAKE_INSTALL_PREFIX=/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install

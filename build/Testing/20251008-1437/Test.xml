@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="(empty)"
+	BuildStamp="20251008-1437-Experimental"
+	Name="icebear"
+	Generator="ctest-3.16.3"
+	CompilerName="/usr/bin/aarch64-linux-gnu-g++"
+	CompilerVersion="9.4.0"
+	OSName="Linux"
+	Hostname="icebear"
+	OSRelease="5.10.192-tegra"
+	OSVersion="#1 SMP PREEMPT Thu Jun 13 20:07:24 PDT 2024"
+	OSPlatform="aarch64"
+	Is64Bits="1"
+	VendorString=""
+	VendorID="Unknown Manufacturer"
+	FamilyID="8"
+	ModelID="0"
+	ProcessorCacheSize="0"
+	NumberOfLogicalCPU="8"
+	NumberOfPhysicalCPU="1"
+	TotalVirtualMemory="7751"
+	TotalPhysicalMemory="15502"
+	LogicalProcessorsPerPhysical="8"
+	ProcessorClockFrequency="0"
+	>
+	<Testing>
+		<StartDateTime>Oct 08 22:41 CST</StartDateTime>
+		<StartTestTime>1759934519</StartTestTime>
+		<TestList/>
+		<EndDateTime>Oct 08 22:41 CST</EndDateTime>
+		<EndTestTime>1759934519</EndTestTime>
+		<ElapsedMinutes>0</ElapsedMinutes>
+	</Testing>
+</Site>
