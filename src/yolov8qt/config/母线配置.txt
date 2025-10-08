@@ -1,0 +1,11 @@
+leaf_size 0.1
+x_min 6.0
+x_max 15.0
+deviation 1.0
+cluster_distance 2.0
+min_cluster_size 5
+max_cluster_size 2000
+charged_thres 200
+xc 0.0
+yc 0.0
+zc 2.0

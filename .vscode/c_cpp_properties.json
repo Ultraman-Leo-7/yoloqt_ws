@@ -1,0 +1,33 @@
+{
+    "configurations": [
+        {
+            "browse": {
+                "databaseFilename": "${default}",
+                "limitSymbolsToIncludedHeaders": false
+            },
+            "includePath": [
+                "/opt/ros/noetic/include/**",
+                "/opt/ros/noetic/include/ros/**",
+                "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/**",
+                "/usr/include/**",
+                "/usr/include/eigen3",
+                "/usr/include/flann",
+                "/usr/local/include/opencv4",
+                "/usr/include/pcl-1.10",
+                "/usr/include/aarch64-linux-gnu/**",
+                "/usr/include/aarch64-linux-gnu/qt5/**",
+                "/usr/include/aarch64-linux-gnu/qt5/QtCore",
+                "/usr/include/aarch64-linux-gnu/qt5/QtWidgets",
+                "/usr/include/aarch64-linux-gnu/qt5/QtGui",
+                "/usr/local/cuda-11.4/include/**"
+            ],
+            "name": "ROS",
+            "intelliSenseMode": "gcc-arm64",
+            "compilerPath": "/usr/bin/aarch64-linux-gnu-gcc",
+            "cStandard": "gnu11",
+            "cppStandard": "c++14",
+            "configurationProvider": "ms-vscode.cmake-tools"
+        }
+    ],
+    "version": 4
+}
