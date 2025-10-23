@@ -1,2 +1,2 @@
 - setup-file:
-    local-name: /usr/local/setup.sh
+    local-name: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/setup.sh

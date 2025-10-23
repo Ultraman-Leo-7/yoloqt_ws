@@ -1,8 +1,0 @@
-prefix=/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel
-
-Name: yolov8qt
-Description: Description of yolov8qt
-Version: 0.1.0
-Cflags: -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/include
-Libs: -L${prefix}/lib 
-Requires: roscpp sensor_msgs cv_bridge image_transport pcl_ros message_filters serial message_runtime

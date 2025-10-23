@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.11.2, 2025-10-07T21:59:23. -->
+<!-- Written by QtCreator 4.11.2, 2025-10-23T21:14:47. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -155,7 +155,7 @@
      <value type="QString">PYTHONPATH=/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel/lib/python3/dist-packages:/opt/ros/noetic/lib/python3/dist-packages</value>
      <value type="QString">ROSLISP_PACKAGE_DIRECTORIES=/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel/share/common-lisp</value>
      <value type="QString">ROS_PACKAGE_PATH=/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src:/opt/ros/noetic/share</value>
-     <value type="QString">SHLVL=200</value>
+     <value type="QString">SHLVL=208</value>
      <value type="QString">TERM=xterm</value>
      <value type="QString">_=/usr/bin/env</value>
     </valuelist>

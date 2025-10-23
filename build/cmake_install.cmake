@@ -1,8 +1,8 @@
-# Install script for directory: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt
+# Install script for directory: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/usr/local")
+  set(CMAKE_INSTALL_PREFIX "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -12,7 +12,7 @@ if(NOT DEFINED CMAKE_INSTALL_CONFIG_NAME)
     string(REGEX REPLACE "^[^A-Za-z0-9_]+" ""
            CMAKE_INSTALL_CONFIG_NAME "${BUILD_TYPE}")
   else()
-    set(CMAKE_INSTALL_CONFIG_NAME "Release")
+    set(CMAKE_INSTALL_CONFIG_NAME "")
   endif()
   message(STATUS "Install configuration: \"${CMAKE_INSTALL_CONFIG_NAME}\"")
 endif()
@@ -49,38 +49,38 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/_setup_util.py")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/_setup_util.py")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE PROGRAM FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/_setup_util.py")
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE PROGRAM FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/_setup_util.py")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/env.sh")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/env.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE PROGRAM FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/env.sh")
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE PROGRAM FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/env.sh")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/setup.bash;/usr/local/local_setup.bash")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/setup.bash;/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/local_setup.bash")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE FILE FILES
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE FILE FILES
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/setup.bash"
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/local_setup.bash"
     )
@@ -88,14 +88,14 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/setup.sh;/usr/local/local_setup.sh")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/setup.sh;/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/local_setup.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE FILE FILES
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE FILE FILES
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/setup.sh"
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/local_setup.sh"
     )
@@ -103,14 +103,14 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/setup.zsh;/usr/local/local_setup.zsh")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/setup.zsh;/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/local_setup.zsh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE FILE FILES
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE FILE FILES
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/setup.zsh"
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/local_setup.zsh"
     )
@@ -118,14 +118,14 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/setup.fish;/usr/local/local_setup.fish")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/setup.fish;/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/local_setup.fish")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE FILE FILES
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE FILE FILES
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/setup.fish"
     "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/local_setup.fish"
     )
@@ -133,90 +133,20 @@ endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/usr/local/.rosinstall")
+   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install/.rosinstall")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-file(INSTALL DESTINATION "/usr/local" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/.rosinstall")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/yolov8qt/msg" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/msg/RJ6KData.msg")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/yolov8qt/cmake" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/yolov8qt-msg-paths.cmake")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/include/yolov8qt")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/roseus/ros" TYPE DIRECTORY FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/share/roseus/ros/yolov8qt")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/common-lisp/ros" TYPE DIRECTORY FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/share/common-lisp/ros/yolov8qt")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gennodejs/ros" TYPE DIRECTORY FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/share/gennodejs/ros/yolov8qt")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  execute_process(COMMAND "/usr/bin/python3" -m compileall "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/lib/python3/dist-packages/yolov8qt")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages" TYPE DIRECTORY FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/lib/python3/dist-packages/yolov8qt")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/yolov8qt" TYPE EXECUTABLE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/lib/yolov8qt/yolov8qt")
-  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/yolov8qt/yolov8qt" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/yolov8qt/yolov8qt")
-    if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/yolov8qt/yolov8qt")
-    endif()
-  endif()
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/yolov8qt" TYPE EXECUTABLE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/devel/lib/yolov8qt/pub_rj6k")
-  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/yolov8qt/pub_rj6k" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/yolov8qt/pub_rj6k")
-    if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/lib/yolov8qt/pub_rj6k")
-    endif()
-  endif()
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/yolov8qt.pc")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/yolov8qt/cmake" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/yolov8qt-msg-extras.cmake")
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/yolov8qt/cmake" TYPE FILE FILES
-    "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/yolov8qtConfig.cmake"
-    "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/yolov8qtConfig-version.cmake"
-    )
-endif()
-
-if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/yolov8qt" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/package.xml")
+file(INSTALL DESTINATION "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/install" TYPE FILE FILES "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/catkin_generated/installspace/.rosinstall")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/gtest/cmake_install.cmake")
+  include("/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/yolov8qt/cmake_install.cmake")
 
 endif()
 
