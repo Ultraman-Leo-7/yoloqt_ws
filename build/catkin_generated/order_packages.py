@@ -2,4 +2,4 @@
 source_root_dir = '/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src'
 whitelisted_packages = ''.split(';') if '' != '' else []
 blacklisted_packages = ''.split(';') if '' != '' else []
-underlay_workspaces = '/opt/ros/noetic'.split(';') if '/opt/ros/noetic' != '' else []
+underlay_workspaces = '/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel;/opt/ros/noetic'.split(';') if '/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel;/opt/ros/noetic' != '' else []
