@@ -96,23 +96,26 @@ YOLOv8::YOLOv8(const std::string& engine_file_path) : is_running(true), result_c
 
     cloud_infile.open(config_path);
     if(!cloud_infile.is_open()){
-        ROS_ERROR("cloud_config.txt open failed");
-        std::cout << config_path << std::endl;
-        LEAF_SIZE = 0.2f;
-        x_min = 2.0;
-        x_max = 6.0;
-        y_min = -2.0;
-        y_max = 2.0;
-        z_min = -4.0;
-        z_max = 8.0;
-        deviation = 0.5;
-        CLUSTER_DISTANCE = 0.1;
-        MIN_CLUSTER_SIZE = 20;
-        MAX_CLUSTER_SIZE = 1000;
-        CHARGED_THRES = 100.0;
-        xc = 0.0;
-        yc = 0.0;
-        zc = 2.0;
+        ROS_FATAL("cloud_config.txt open failed! Path: %s", config_path.c_str());
+        std::cerr << "配置文件打开失败，程序终止！路径：" << config_path << std::endl;
+        exit(1);  // 终止程序
+
+        // 以下默认值代码已注释，不再使用默认值
+        // LEAF_SIZE = 0.2f;
+        // x_min = 2.0;
+        // x_max = 6.0;
+        // y_min = -2.0;
+        // y_max = 2.0;
+        // z_min = -4.0;
+        // z_max = 8.0;
+        // deviation = 0.5;
+        // CLUSTER_DISTANCE = 0.1;
+        // MIN_CLUSTER_SIZE = 20;
+        // MAX_CLUSTER_SIZE = 1000;
+        // CHARGED_THRES = 100.0;
+        // xc = 0.0;
+        // yc = 0.0;
+        // zc = 2.0;
     }
     else{
         std::cout << "cloud_config 配置文件加载成功" << std::endl;
@@ -134,22 +137,27 @@ YOLOv8::YOLOv8(const std::string& engine_file_path) : is_running(true), result_c
             else if(param == "yc") cloud_infile >> yc;
             else if(param == "zc") cloud_infile >> zc;
             else{
-                std::cerr << "Unknown parameter: " << param << std::endl;
-                LEAF_SIZE = 0.2f;
-                x_min = 2.0;
-                x_max = 6.0;
-                y_min = -2.0;
-                y_max = 2.0;
-                z_min = -4.0;
-                z_max = 8.0;
-                deviation = 0.5;
-                CLUSTER_DISTANCE = 0.1;
-                MIN_CLUSTER_SIZE = 20;
-                MAX_CLUSTER_SIZE = 1000;
-                CHARGED_THRES = 100.0;
-                xc = 0.0;
-                yc = 0.0;
-                zc = 2.0;
+                ROS_FATAL("Unknown parameter in config file: %s", param.c_str());
+                std::cerr << "配置文件中存在未知参数：" << param << "，程序终止！" << std::endl;
+                cloud_infile.close();
+                exit(1);  // 终止程序
+
+                // 以下默认值代码已注释，不再使用默认值
+                // LEAF_SIZE = 0.2f;
+                // x_min = 2.0;
+                // x_max = 6.0;
+                // y_min = -2.0;
+                // y_max = 2.0;
+                // z_min = -4.0;
+                // z_max = 8.0;
+                // deviation = 0.5;
+                // CLUSTER_DISTANCE = 0.1;
+                // MIN_CLUSTER_SIZE = 20;
+                // MAX_CLUSTER_SIZE = 1000;
+                // CHARGED_THRES = 100.0;
+                // xc = 0.0;
+                // yc = 0.0;
+                // zc = 2.0;
             }
         }
         cloud_infile.close();
