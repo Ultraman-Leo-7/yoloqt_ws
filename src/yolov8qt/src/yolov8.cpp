@@ -1,6 +1,7 @@
 #include "../include/yolov8qt/yolov8.h"
 #include "../include/yolov8qt/electric_field.h"
 #include <ros/ros.h>
+#include <cmath>  // 添加此头文件以确保sqrt函数可用
 
 float LEAF_SIZE;
 float x_min, x_max, y_min, y_max, z_min, z_max;
@@ -627,8 +628,8 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
             // 原代码：比较comsol和各个方向分量（已注释）
             // if((abs(comsol_point[3] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(comsol_point[4] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(comsol_point[5] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(comsol_point[6] - rj6k_datas.data[4]) <= CHARGED_THRES) || (abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES)){
-            // 新代码：只比较50Hz频点综合电场与模拟电荷法计算的总场强
-            if(abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
+            // 新代码：将模拟电荷法计算的峰值转换为有效值（除以根号2），再与50Hz频点综合电场（有效值）比较
+            if(abs(E_simulation[3] / std::sqrt(2.0) - rj6k_datas.data[4]) <= CHARGED_THRES){
                 this->result_state = "带电";
             }
             else this->result_state = "不带电";
@@ -641,8 +642,8 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
             // 原代码：比较各个方向分量（已注释）
             // if(abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
-            // 新代码：只比较50Hz频点综合电场与模拟电荷法计算的总场强
-            if(abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
+            // 新代码：将模拟电荷法计算的峰值转换为有效值（除以根号2），再与50Hz频点综合电场（有效值）比较
+            if(abs(E_simulation[3] / std::sqrt(2.0) - rj6k_datas.data[4]) <= CHARGED_THRES){
                 this->result_state = "带电";
             }
             else this->result_state = "不带电";
