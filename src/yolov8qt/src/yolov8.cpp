@@ -625,7 +625,10 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             // std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
             // RJ6K 实测电场强度数据：(综合场强， x方向分量， y方向分量， z方向分量， 综合场强@50 Hz)，如果实测值是有效值，还要乘以根号2。才能与计算值和仿真值进行比较
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
-            if((abs(comsol_point[3] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(comsol_point[4] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(comsol_point[5] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(comsol_point[6] - rj6k_datas.data[4]) <= CHARGED_THRES) || (abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES)){
+            // 原代码：比较comsol和各个方向分量（已注释）
+            // if((abs(comsol_point[3] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(comsol_point[4] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(comsol_point[5] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(comsol_point[6] - rj6k_datas.data[4]) <= CHARGED_THRES) || (abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES)){
+            // 新代码：只比较50Hz频点综合电场与模拟电荷法计算的总场强
+            if(abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
                 this->result_state = "带电";
             }
             else this->result_state = "不带电";
@@ -636,7 +639,10 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             // std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
             // RJ6K 实测电场强度数据：(综合场强， x方向分量， y方向分量， z方向分量， 综合场强@50 Hz)，如果实测值是有效值，还要乘以根号2。才能与计算值进行比较
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
-            if(abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
+            // 原代码：比较各个方向分量（已注释）
+            // if(abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
+            // 新代码：只比较50Hz频点综合电场与模拟电荷法计算的总场强
+            if(abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
                 this->result_state = "带电";
             }
             else this->result_state = "不带电";
