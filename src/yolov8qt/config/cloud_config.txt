@@ -9,7 +9,7 @@ deviation 1.0
 cluster_distance 1.0
 min_cluster_size 5
 max_cluster_size 2000
-charged_thres 10000
+charged_thres 0.5
 xc 4.0
 yc 0.0
 zc 2.0
