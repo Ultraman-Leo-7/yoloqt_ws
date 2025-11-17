@@ -624,10 +624,30 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
 
         if(bbox_name == "muxian"){
             obj_height.data = obj_info.centroid_.z + leida_lidigaodu;  //要发布的变电设备高度话题
-             //模拟电荷法计算观测点(xc,yc,zc)的电场强度:(Ex, Ey, Ez, normE)
-            std::vector<double> E_simulation = calculateElectricField(xc, yc, zc, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
+
+            // ==================== 重要说明：测点坐标来源 ====================
+            // 1. calculateElectricField 函数的测点坐标来自 powerline_config.txt 文件的最后一行
+            //    当前配置：测点坐标为 (5, 0, 2)
+            //    注意：传入的前三个参数 (xc, yc, zc) 会被配置文件中的值覆盖，因此传入任何值都无效
+            //    函数内部会调用 readConfig()，该函数会从配置文件读取并覆盖传入的坐标参数
+            //
+            // 2. findNearestPoint 函数使用的测点坐标来自 cloud_config.txt 中的 (xc, yc, zc)
+            //    当前配置：测点坐标为 (4.0, 0.0, 2.0)
+            //    注意：该函数真正使用传入的参数进行计算
+            //
+            // 3. 结论：两个函数计算的是不同位置的电场强度！
+            //    - calculateElectricField 计算的是 (5, 0, 2) 处的电场
+            //    - findNearestPoint 查找的是距离 (4.0, 0.0, 2.0) 最近的 COMSOL 仿真点
+            //    两者在 x 方向相差 1 米
+            // ================================================================
+
+            // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
+            // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 powerline_config.txt 中的测点坐标
+            std::vector<double> E_simulation = calculateElectricField(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
             // std::vector<double> E_simulation = calculateElectricField(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
-            //从COMSOL仿真结果表中查找观测点的电场强度仿真值
+
+            // 从 COMSOL 仿真结果表中查找距离观测点 (xc, yc, zc) 最近的点的电场强度仿真值
+            // 这里的 (xc, yc, zc) 来自 cloud_config.txt，当前为 (4.0, 0.0, 2.0)
             std::vector<float> comsol_point = findNearestPoint(xc, yc, zc, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/result/comsol_result_final.txt");
             // std::vector<float> comsol_point = findNearestPoint(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/result/comsol_result.txt");
             // std::cout << "距离 " << bbox_name << " 最近的点为：(" << comsol_point[0] << ", " << comsol_point[1] << ", " << comsol_point[2] << ") m" << std::endl;
@@ -648,8 +668,16 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             else this->result_state = "不带电";
         }
         else if(bbox_name == "kaiguan"){
-            //模拟电荷法计算观测点(xc,yc,zc)的电场强度:(Ex, Ey, Ez, normE)
-            std::vector<double> E_simulation = calculateElectricField_kaiguan(xc, yc, zc, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/kaiguan_config.txt");
+            // ==================== 重要说明：测点坐标来源 ====================
+            // calculateElectricField_kaiguan 函数的测点坐标来自 kaiguan_config.txt 文件的最后一行
+            // 当前配置：测点坐标为 (2, 0, 2)
+            // 注意：传入的前三个参数 (xc, yc, zc) 会被配置文件中的值覆盖，因此传入任何值都无效
+            // 函数内部会调用 readConfig_kaiguan()，该函数会从配置文件读取并覆盖传入的坐标参数
+            // ================================================================
+
+            // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
+            // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 kaiguan_config.txt 中的测点坐标
+            std::vector<double> E_simulation = calculateElectricField_kaiguan(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/kaiguan_config.txt");
             // std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
             // RJ6K 实测电场强度数据：(综合场强， x方向分量， y方向分量， z方向分量， 综合场强@50 Hz)，如果实测值是有效值，还要乘以根号2。才能与计算值进行比较
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
