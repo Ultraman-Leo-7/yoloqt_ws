@@ -10,6 +10,7 @@ int MIN_CLUSTER_SIZE, MAX_CLUSTER_SIZE;
 float CLUSTER_DISTANCE;
 float CHARGED_THRES;
 float  xc, yc, zc;
+float leida_lidigaodu;
 
 bool compare_x(pcl::PointXYZ a, pcl::PointXYZ b){
     return (a.x < b.x);
@@ -136,6 +137,7 @@ YOLOv8::YOLOv8(const std::string& engine_file_path) : is_running(true), result_c
             else if(param == "xc") cloud_infile >> xc;
             else if(param == "yc") cloud_infile >> yc;
             else if(param == "zc") cloud_infile >> zc;
+            else if(param == "leida_lidigaodu") cloud_infile >> leida_lidigaodu;
             else{
                 ROS_FATAL("Unknown parameter in config file: %s", param.c_str());
                 std::cerr << "配置文件中存在未知参数：" << param << "，程序终止！" << std::endl;
@@ -621,7 +623,7 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
         std::cout << "开始处理电场强度" << std::endl;
 
         if(bbox_name == "muxian"){
-            obj_height.data = obj_info.centroid_.z;  //要发布的变电设备高度话题
+            obj_height.data = obj_info.centroid_.z + leida_lidigaodu;  //要发布的变电设备高度话题
              //模拟电荷法计算观测点(xc,yc,zc)的电场强度:(Ex, Ey, Ez, normE)
             std::vector<double> E_simulation = calculateElectricField(xc, yc, zc, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
             // std::vector<double> E_simulation = calculateElectricField(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
