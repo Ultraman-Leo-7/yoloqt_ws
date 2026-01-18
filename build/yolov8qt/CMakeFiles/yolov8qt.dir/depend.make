@@ -3817,7 +3817,6 @@ yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/yolov8qt/common.hpp
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/yolov8qt/mainwindow.h
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/yolov8qt/project.h
-yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/yolov8qt/ui_mainwindow.h
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/yolov8qt/yolov8.h
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/src/mainwindow.cpp
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /opt/ros/noetic/include/cv_bridge/cv_bridge.h
@@ -4903,6 +4902,7 @@ yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /usr/local/include/opencv
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /usr/local/include/opencv4/opencv2/videostab/ring_buffer.hpp
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /usr/local/include/opencv4/opencv2/videostab/stabilizer.hpp
 yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: /usr/local/include/opencv4/opencv2/videostab/wobble_suppression.hpp
+yolov8qt/CMakeFiles/yolov8qt.dir/src/mainwindow.cpp.o: yolov8qt/ui_mainwindow.h
 
 yolov8qt/CMakeFiles/yolov8qt.dir/src/project.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include/yolov8qt/project.h
 yolov8qt/CMakeFiles/yolov8qt.dir/src/project.cpp.o: /home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/src/project.cpp

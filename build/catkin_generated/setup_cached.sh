@@ -7,4 +7,7 @@
 # new environment variables
 
 # modified environment variables
+export LD_LIBRARY_PATH='/opt/ros/noetic/lib:/opt/ros/noetic/lib/aarch64-linux-gnu:/usr/local/cuda/lib64'
+export PKG_CONFIG_PATH='/opt/ros/noetic/lib/pkgconfig:/opt/ros/noetic/lib/aarch64-linux-gnu/pkgconfig:/usr/local/lib/pkgconfig'
 export PWD='/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build'
+export PYTHONPATH='/opt/ros/noetic/lib/python3/dist-packages'

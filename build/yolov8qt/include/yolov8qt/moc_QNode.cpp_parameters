@@ -29,6 +29,7 @@
 -I/usr/local/include/opencv4
 -I/usr/local/include
 -I/usr/include/eigen3
+-I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/yolov8qt
 -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include
 -DROS_BUILD_SHARED_LIBS=1
 -DROS_BUILD_SHARED_LIBS=1

@@ -28,13 +28,13 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralwidget;
-    QVBoxLayout *verticalLayout_main;
+    QVBoxLayout *verticalLayout_2;
     QHBoxLayout *horizontalLayout_top;
     QLabel *ResultTextLabel;
     QLabel *WarnTextLabel;
-    QHBoxLayout *horizontalLayout_middle;
+    QHBoxLayout *horizontalLayout_2;
     ClickableLabel *ResultImgShowLabel;
-    QVBoxLayout *verticalLayout_right;
+    QVBoxLayout *verticalLayout;
     QLabel *DataTextLabel;
     QHBoxLayout *horizontalLayout_model;
     QLabel *ChangeModelLabel;
@@ -42,6 +42,9 @@ public:
     QHBoxLayout *horizontalLayout_fps;
     QLabel *FPSTextLabel;
     QLabel *FPSShowLabel;
+    QHBoxLayout *horizontalLayout;
+    QLabel *ChangeVLabel;
+    QComboBox *VListShowBox;
     QVBoxLayout *verticalLayout_data;
     QHBoxLayout *horizontalLayout_class;
     QLabel *ClassTextLabel;
@@ -67,10 +70,11 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
+        MainWindow->resize(290, 567);
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-        verticalLayout_main = new QVBoxLayout(centralwidget);
-        verticalLayout_main->setObjectName(QString::fromUtf8("verticalLayout_main"));
+        verticalLayout_2 = new QVBoxLayout(centralwidget);
+        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
         horizontalLayout_top = new QHBoxLayout();
         horizontalLayout_top->setObjectName(QString::fromUtf8("horizontalLayout_top"));
         ResultTextLabel = new QLabel(centralwidget);
@@ -84,10 +88,10 @@ public:
         horizontalLayout_top->addWidget(WarnTextLabel);
 
 
-        verticalLayout_main->addLayout(horizontalLayout_top);
+        verticalLayout_2->addLayout(horizontalLayout_top);
 
-        horizontalLayout_middle = new QHBoxLayout();
-        horizontalLayout_middle->setObjectName(QString::fromUtf8("horizontalLayout_middle"));
+        horizontalLayout_2 = new QHBoxLayout();
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
         ResultImgShowLabel = new ClickableLabel(centralwidget);
         ResultImgShowLabel->setObjectName(QString::fromUtf8("ResultImgShowLabel"));
         QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -96,16 +100,16 @@ public:
         sizePolicy.setHeightForWidth(ResultImgShowLabel->sizePolicy().hasHeightForWidth());
         ResultImgShowLabel->setSizePolicy(sizePolicy);
 
-        horizontalLayout_middle->addWidget(ResultImgShowLabel);
+        horizontalLayout_2->addWidget(ResultImgShowLabel);
 
-        verticalLayout_right = new QVBoxLayout();
-        verticalLayout_right->setObjectName(QString::fromUtf8("verticalLayout_right"));
+        verticalLayout = new QVBoxLayout();
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         DataTextLabel = new QLabel(centralwidget);
         DataTextLabel->setObjectName(QString::fromUtf8("DataTextLabel"));
         DataTextLabel->setMinimumSize(QSize(0, 0));
         DataTextLabel->setMaximumSize(QSize(16777215, 20));
 
-        verticalLayout_right->addWidget(DataTextLabel, 0, Qt::AlignHCenter);
+        verticalLayout->addWidget(DataTextLabel);
 
         horizontalLayout_model = new QHBoxLayout();
         horizontalLayout_model->setObjectName(QString::fromUtf8("horizontalLayout_model"));
@@ -124,7 +128,7 @@ public:
         horizontalLayout_model->addWidget(ModelListShowBox);
 
 
-        verticalLayout_right->addLayout(horizontalLayout_model);
+        verticalLayout->addLayout(horizontalLayout_model);
 
         horizontalLayout_fps = new QHBoxLayout();
         horizontalLayout_fps->setObjectName(QString::fromUtf8("horizontalLayout_fps"));
@@ -141,7 +145,28 @@ public:
         horizontalLayout_fps->addWidget(FPSShowLabel, 0, Qt::AlignHCenter);
 
 
-        verticalLayout_right->addLayout(horizontalLayout_fps);
+        verticalLayout->addLayout(horizontalLayout_fps);
+
+        horizontalLayout = new QHBoxLayout();
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        ChangeVLabel = new QLabel(centralwidget);
+        ChangeVLabel->setObjectName(QString::fromUtf8("ChangeVLabel"));
+        ChangeVLabel->setMaximumSize(QSize(16777215, 20));
+
+        horizontalLayout->addWidget(ChangeVLabel);
+
+        VListShowBox = new QComboBox(centralwidget);
+        VListShowBox->addItem(QString());
+        VListShowBox->addItem(QString());
+        VListShowBox->addItem(QString());
+        VListShowBox->addItem(QString());
+        VListShowBox->setObjectName(QString::fromUtf8("VListShowBox"));
+        VListShowBox->setMaximumSize(QSize(16777215, 20));
+
+        horizontalLayout->addWidget(VListShowBox);
+
+
+        verticalLayout->addLayout(horizontalLayout);
 
         verticalLayout_data = new QVBoxLayout();
         verticalLayout_data->setObjectName(QString::fromUtf8("verticalLayout_data"));
@@ -231,30 +256,30 @@ public:
         verticalLayout_data->addLayout(horizontalLayout_state);
 
 
-        verticalLayout_right->addLayout(verticalLayout_data);
+        verticalLayout->addLayout(verticalLayout_data);
 
         SaveDataButton = new QPushButton(centralwidget);
         SaveDataButton->setObjectName(QString::fromUtf8("SaveDataButton"));
         SaveDataButton->setMaximumSize(QSize(1000, 16777215));
 
-        verticalLayout_right->addWidget(SaveDataButton);
+        verticalLayout->addWidget(SaveDataButton);
 
         ContinueDetectButton = new QPushButton(centralwidget);
         ContinueDetectButton->setObjectName(QString::fromUtf8("ContinueDetectButton"));
         ContinueDetectButton->setMaximumSize(QSize(1000, 16777215));
 
-        verticalLayout_right->addWidget(ContinueDetectButton);
+        verticalLayout->addWidget(ContinueDetectButton);
 
 
-        horizontalLayout_middle->addLayout(verticalLayout_right);
+        horizontalLayout_2->addLayout(verticalLayout);
 
 
-        verticalLayout_main->addLayout(horizontalLayout_middle);
+        verticalLayout_2->addLayout(horizontalLayout_2);
 
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1504, 28));
+        menubar->setGeometry(QRect(0, 0, 290, 21));
         MainWindow->setMenuBar(menubar);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -278,6 +303,12 @@ public:
 
         FPSTextLabel->setText(QApplication::translate("MainWindow", "\345\275\223\345\211\215\345\270\247\347\216\207\357\274\232", nullptr));
         FPSShowLabel->setText(QApplication::translate("MainWindow", "60 FPS", nullptr));
+        ChangeVLabel->setText(QApplication::translate("MainWindow", "\345\210\207\346\215\242\347\224\265\345\216\213\347\255\211\347\272\247\357\274\232", nullptr));
+        VListShowBox->setItemText(0, QApplication::translate("MainWindow", "110kV", nullptr));
+        VListShowBox->setItemText(1, QApplication::translate("MainWindow", "220kV", nullptr));
+        VListShowBox->setItemText(2, QApplication::translate("MainWindow", "330kV", nullptr));
+        VListShowBox->setItemText(3, QApplication::translate("MainWindow", "500kV", nullptr));
+
         ClassTextLabel->setText(QApplication::translate("MainWindow", "\351\200\211\344\270\255\350\256\276\345\244\207\347\261\273\345\210\253\357\274\232", nullptr));
         ClassShowLabel->setText(QApplication::translate("MainWindow", "\346\257\215\347\272\277", nullptr));
         ConfTextLabel->setText(QApplication::translate("MainWindow", "\347\275\256\344\277\241\345\272\246\357\274\232", nullptr));

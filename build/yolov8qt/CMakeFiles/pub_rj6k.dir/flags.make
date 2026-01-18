@@ -6,5 +6,5 @@ CXX_FLAGS =  -std=c++17 -O3  -O3 -DNDEBUG   -std=gnu++17
 
 CXX_DEFINES = -DROSCONSOLE_BACKEND_LOG4CXX -DROS_BUILD_SHARED_LIBS=1 -DROS_PACKAGE_NAME=\"yolov8qt\" -DvtkRenderingContext2D_AUTOINIT="1(vtkRenderingContextOpenGL2)" -DvtkRenderingCore_AUTOINIT="3(vtkInteractionStyle,vtkRenderingFreeType,vtkRenderingOpenGL2)"
 
-CXX_INCLUDES = -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel/include -I/usr/include/vtk-7.1 -I/usr/include/freetype2 -I/usr/local/cuda/include -I/usr/include/pcl-1.10 -I/usr/include/eigen3 -I/usr/include/ni -I/usr/include/openni2 -I/usr/local/include/opencv4 -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include 
+CXX_INCLUDES = -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/devel/include -I/usr/include/vtk-7.1 -I/usr/include/freetype2 -I/usr/local/cuda/include -I/usr/include/pcl-1.10 -I/usr/include/eigen3 -I/usr/include/ni -I/usr/include/openni2 -I/usr/local/include/opencv4 -I/opt/ros/noetic/include -I/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/build/yolov8qt -I/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include 
 

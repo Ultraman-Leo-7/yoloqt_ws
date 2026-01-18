@@ -30,6 +30,7 @@ set(CMAKE_CXX_TARGET_INCLUDE_PATH
   "/usr/local/include/opencv4"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
+  "yolov8qt"
   "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/include"
   )
 
