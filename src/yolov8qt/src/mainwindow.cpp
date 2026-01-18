@@ -1,7 +1,7 @@
 #include <QtGui>
 #include <QApplication>
 #include "../include/yolov8qt/mainwindow.h"
-#include "ui_mainwindow.h"
+#include <ui_mainwindow.h>
 #include <cv_bridge/cv_bridge.h>
 // #include <sensor_msgs/image_encodings.h>
 // #include <pcl_conversions/pcl_conversions.h>

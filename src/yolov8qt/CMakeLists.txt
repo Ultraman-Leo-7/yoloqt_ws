@@ -242,7 +242,9 @@ find_package(Qt5 REQUIRED Core Widgets)
 set(QT_LIBRARIES Qt5::Widgets)
 
 # Qt 文件
-file(GLOB QT_FORMS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ui/mainwindow.ui)
+set(QT_FORMS
+  ${CMAKE_CURRENT_SOURCE_DIR}/ui/mainwindow.ui
+)
 file(GLOB QT_RESOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} resources/*.qrc)
 file(GLOB_RECURSE QT_MOC RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS include/yolov8qt/yolov8.h common.hpp ClickableLabel.h project.h QNode.h mainwindow.h electric_field.h)
 
@@ -264,6 +266,7 @@ target_link_libraries(pub_rj6k ${catkin_LIBRARIES})
 
 # 主程序 yolov8qt
 add_executable(yolov8qt ${QT_SOURCES} ${QT_RESOURCES_CPP} ${QT_FORMS_HPP} ${QT_MOC_HPP})
+target_include_directories(yolov8qt PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(yolov8qt ${QT_LIBRARIES} ${catkin_LIBRARIES} ${ALL_LIBS})
 
 # 安装目标
