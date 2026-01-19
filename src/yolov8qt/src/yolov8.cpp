@@ -276,7 +276,13 @@ std::vector<float> YOLOv8::findNearestPoint(float xc, float yc, float zc, const 
         // 解析数据
         if (!(iss >> x >> y >> z >> Ex_real >> Ex_imag >> Ey_real >> Ey_imag >> Ez_real >> Ez_imag >> E))
         {
-            std::cerr << "Failed to parse line: " << line << std::endl;
+            // 静默跳过无法解析的行（可能包含NaN等无效数据，这在导线附近的奇异点常见）
+            continue;
+        }
+
+        // 跳过包含NaN或无穷大的数据
+        if (std::isnan(Ex_real) || std::isnan(Ey_real) || std::isnan(Ez_real) ||
+            std::isnan(E) || std::isinf(E)) {
             continue;
         }
 
