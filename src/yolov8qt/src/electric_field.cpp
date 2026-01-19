@@ -127,7 +127,7 @@ double integrate(function<double(double)> f, double a, double b, double tol) {
 }
 
 // 从文件读取配置
-void readConfig(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz) {
+void readConfig(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv) {
     ifstream file(filename);
     if (!file.is_open()) {
         cerr << "无法打开文件: " << filename << endl;
@@ -139,27 +139,56 @@ void readConfig(const string& filename, vector<Line>& lines, vector<Point>& poin
 
     lines.resize(n_line);
     points.resize(n_point);
-    double realPart, imagPart;
+    double phase_angle;
+
+    // 将电压从kV转换为V
+    double voltage_v = voltage_kv * 1000.0;
 
     for (int i = 0; i < n_line; ++i) {
         file >> lines[i].x1 >> lines[i].y1 >> lines[i].z1;
         file >> lines[i].x2 >> lines[i].y2 >> lines[i].z2;
         file >> lines[i].r;
-        file >> realPart >> imagPart;
+        file >> phase_angle;
+
+        // 验证相位角是否有效
+        if (file.fail()) {
+            cerr << "错误：无效的相位角度值在第 " << (i + 1) << " 条导线配置中" << endl;
+            exit(1);
+        }
+
+        // 将角度转换为弧度
+        double phase_rad = phase_angle * M_PI / 180.0;
+
+        // 计算复数电压：实部 = V * cos(θ), 虚部 = V * sin(θ)
+        double realPart = voltage_v * cos(phase_rad);
+        double imagPart = voltage_v * sin(phase_rad);
         lines[i].V = complex<double>(realPart, imagPart);
     }
 
     for (int i = 0; i < n_point; ++i) {
         file >> points[i].x >> points[i].y >> points[i].z;
         file >> points[i].xm >> points[i].ym >> points[i].zm;
-        file >> realPart >> imagPart;
+        file >> phase_angle;
+
+        // 验证相位角是否有效
+        if (file.fail()) {
+            cerr << "错误：无效的相位角度值在第 " << (i + 1) << " 个点电荷配置中" << endl;
+            exit(1);
+        }
+
+        // 将角度转换为弧度
+        double phase_rad = phase_angle * M_PI / 180.0;
+
+        // 计算复数电压
+        double realPart = voltage_v * cos(phase_rad);
+        double imagPart = voltage_v * sin(phase_rad);
         points[i].V = complex<double>(realPart, imagPart);
     }
 
     file >> epsilon >> Px >> Py >> Pz;
 }
 
-void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz) {
+void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv) {
     ifstream file(filename);
     if (!file.is_open()) {
         cerr << "无法打开文件: " << filename << endl;
@@ -171,13 +200,29 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
 
     lines.resize(n_line);
     points.resize(n_point);
-    double realPart, imagPart;
+    double phase_angle;
+
+    // 将电压从kV转换为V
+    double voltage_v = voltage_kv * 1000.0;
 
     for (int i = 0; i < n_line; ++i) {
         file >> lines[i].x1 >> lines[i].y1 >> lines[i].z1;
         file >> lines[i].x2 >> lines[i].y2 >> lines[i].z2;
         file >> lines[i].r;
-        file >> realPart >> imagPart;
+        file >> phase_angle;
+
+        // 验证相位角是否有效
+        if (file.fail()) {
+            cerr << "错误：无效的相位角度值在第 " << (i + 1) << " 条导线配置中" << endl;
+            exit(1);
+        }
+
+        // 将角度转换为弧度
+        double phase_rad = phase_angle * M_PI / 180.0;
+
+        // 计算复数电压：实部 = V * cos(θ), 虚部 = V * sin(θ)
+        double realPart = voltage_v * cos(phase_rad);
+        double imagPart = voltage_v * sin(phase_rad);
         lines[i].V = complex<double>(realPart, imagPart);
         // lines[i].z1 = Pz + 1;  // 假设开关长度=2m，开关端点1的z坐标为Pz+1
         // lines[i].z2 = Pz - 1;  // 开关端点2的z坐标为Pz-1
@@ -186,7 +231,20 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
     for (int i = 0; i < n_point; ++i) {
         file >> points[i].x >> points[i].y >> points[i].z;
         file >> points[i].xm >> points[i].ym >> points[i].zm;
-        file >> realPart >> imagPart;
+        file >> phase_angle;
+
+        // 验证相位角是否有效
+        if (file.fail()) {
+            cerr << "错误：无效的相位角度值在第 " << (i + 1) << " 个点电荷配置中" << endl;
+            exit(1);
+        }
+
+        // 将角度转换为弧度
+        double phase_rad = phase_angle * M_PI / 180.0;
+
+        // 计算复数电压
+        double realPart = voltage_v * cos(phase_rad);
+        double imagPart = voltage_v * sin(phase_rad);
         points[i].V = complex<double>(realPart, imagPart);
     }
 
@@ -194,13 +252,13 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
 }
 
 // 封装的函数：计算电场
-vector<double> calculateElectricField(double Px, double Py, double Pz, const string& config_file) {
+vector<double> calculateElectricField(double Px, double Py, double Pz, const string& config_file, double voltage_kv) {
     vector<Line> lines;
     vector<Point> points;
     double epsilon;
 
     // 读取配置文件
-    readConfig(config_file, lines, points, epsilon, Px, Py, Pz);
+    readConfig(config_file, lines, points, epsilon, Px, Py, Pz, voltage_kv);
 
     // 构建电位系数矩阵并求解电荷密度
     MatrixXcd A(lines.size() + points.size(), lines.size() + points.size());
@@ -286,13 +344,13 @@ vector<double> calculateElectricField(double Px, double Py, double Pz, const str
 
 
 
-vector<double> calculateElectricField_kaiguan(double Px, double Py, double Pz, const string& config_file) {
+vector<double> calculateElectricField_kaiguan(double Px, double Py, double Pz, const string& config_file, double voltage_kv) {
     vector<Line> lines;
     vector<Point> points;
     double epsilon;
 
     // 读取配置文件
-    readConfig_kaiguan(config_file, lines, points, epsilon, Px, Py, Pz);
+    readConfig_kaiguan(config_file, lines, points, epsilon, Px, Py, Pz, voltage_kv);
     std::cout << "kaiguan_config 读取完成" << std::endl; 
     // 构建电位系数矩阵并求解电荷密度
     MatrixXcd A(lines.size() + points.size(), lines.size() + points.size());

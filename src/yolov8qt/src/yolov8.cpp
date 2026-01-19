@@ -24,7 +24,7 @@ bool compare_z(pcl::PointXYZ a, pcl::PointXYZ b){
 projector YOLOv8::proj;
 // pcl::PointCloud<pcl::PointXYZ>::Ptr YOLOv8::cloud = pcl::PointCloud<pcl::PointXYZ>::Ptr(new pcl::PointCloud<pcl::PointXYZ>);
 
-YOLOv8::YOLOv8(const std::string& engine_file_path) : is_running(true), result_class("未检测到"), result_conf(0.0f), result_distance(0.0f), result_electricity(0.0f), result_state("待定"), result_FPS(0)
+YOLOv8::YOLOv8(const std::string& engine_file_path) : is_running(true), result_class("未检测到"), result_conf(0.0f), result_distance(0.0f), result_electricity(0.0f), result_state("待定"), result_FPS(0), voltage_kv_(220.0)
 {
     // 找到最后一个'/'的位置
     std::size_t lastSlashPos = engine_file_path.find_last_of("/\\");
@@ -181,6 +181,14 @@ YOLOv8::~YOLOv8()
     for (auto& ptr : this->host_ptrs) {
         CHECK(cudaFreeHost(ptr));
     }
+}
+
+void YOLOv8::setVoltage(double voltage_kv) {
+    voltage_kv_ = voltage_kv;
+}
+
+double YOLOv8::getVoltage() const {
+    return voltage_kv_;
 }
 
 // 欧氏距离查找到观测点的最近点
@@ -643,8 +651,8 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
 
             // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
             // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 powerline_config.txt 中的测点坐标
-            std::vector<double> E_simulation = calculateElectricField(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
-            // std::vector<double> E_simulation = calculateElectricField(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt");
+            std::vector<double> E_simulation = calculateElectricField(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_);
+            // std::vector<double> E_simulation = calculateElectricField(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_);
 
             // 从 COMSOL 仿真结果表中查找距离观测点 (xc, yc, zc) 最近的点的电场强度仿真值
             // 这里的 (xc, yc, zc) 来自 cloud_config.txt，当前为 (4.0, 0.0, 2.0)
@@ -677,7 +685,7 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
 
             // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
             // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 kaiguan_config.txt 中的测点坐标
-            std::vector<double> E_simulation = calculateElectricField_kaiguan(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/kaiguan_config.txt");
+            std::vector<double> E_simulation = calculateElectricField_kaiguan(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/kaiguan_config.txt", voltage_kv_);
             // std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
             // RJ6K 实测电场强度数据：(综合场强， x方向分量， y方向分量， z方向分量， 综合场强@50 Hz)，如果实测值是有效值，还要乘以根号2。才能与计算值进行比较
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;

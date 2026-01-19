@@ -82,6 +82,13 @@ void QNode::switchModel(const QString& model_path){
     qDebug() << "switch to model: " << model_path;
 }
 
+void QNode::setVoltage(double voltage_kv) {
+    if (yolov8) {
+        yolov8->setVoltage(voltage_kv);
+        qDebug() << "Voltage set to: " << voltage_kv << " kV";
+    }
+}
+
 void QNode::DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_msgs::PointCloud2ConstPtr& pc){
     //qDebug() << "DetectCallback Thread ID: " << QThread::currentThreadId();
     std::lock_guard<std::mutex> lock(model_mutex);

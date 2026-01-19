@@ -26,6 +26,7 @@ public:
     bool init();
     void run() override;
     void switchModel(const QString& model_path);
+    void setVoltage(double voltage_kv);
 
 signals:
     void rosShutdown();

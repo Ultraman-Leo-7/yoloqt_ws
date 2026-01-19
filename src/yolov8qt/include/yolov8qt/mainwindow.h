@@ -47,6 +47,7 @@ protected:
 private slots:
     void on_SaveDataButton_clicked();
     void on_ModelListShowBox_currentIndexChanged(const QString &modelname);
+    void on_VListShowBox_currentTextChanged(const QString &voltage_text);
     //void on_ResultImgShowLabel_clicked(int x, int y);
     void on_ContinueDetectButton_clicked();
     void updateData(const QImage& img, int fps, const QString& class_name, float conf, float distance, float electric, const QString& state);

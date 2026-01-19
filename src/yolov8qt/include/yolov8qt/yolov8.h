@@ -95,6 +95,8 @@ public:
                 int num_labels = 80);
     
     void stop_detect();
+    void setVoltage(double voltage_kv);
+    double getVoltage() const;
     ~YOLOv8();
 
     bool is_running;
@@ -120,7 +122,9 @@ public:
     float result_electricity;  //综合电场强度 @50 Hz
     std::string result_state;  //是否带电
     int result_FPS;  //检测帧率
+
 private:
+    double voltage_kv_;  // 电压值(单位: kV)
     nvinfer1::ICudaEngine* engine = nullptr;
     nvinfer1::IRuntime* runtime = nullptr;
     nvinfer1::IExecutionContext* context = nullptr;

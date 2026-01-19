@@ -65,6 +65,7 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 
 
     connect(ui->ModelListShowBox, SIGNAL(currentIndexChanged(const QString&)), this, SLOT(on_ModelListShowBox_currentIndexChanged(const QString&)));
+    connect(ui->VListShowBox, SIGNAL(currentTextChanged(const QString&)), this, SLOT(on_VListShowBox_currentTextChanged(const QString&)));
     connect(ui->SaveDataButton, &QPushButton::clicked, this, &MainWindow::on_SaveDataButton_clicked);
     //clicked信号和ResultImgShowLabel的槽函数已经在Qt Creator中通过右键转到槽连接了，这里禁止再次connect连接，否则会出现单击一次，槽函数被调用两次的情况
     //connect(ui->ResultImgShowLabel, &ClickableLabel::clicked, this, &MainWindow::on_ResultImgShowLabel_clicked);
@@ -77,7 +78,10 @@ MainWindow::MainWindow(int argc, char** argv, QWidget *parent)
 
     //安装事件过滤器
     ui->ResultImgShowLabel->installEventFilter(this);
-    
+
+    // 初始化时设置默认电压值（220kV是第二个选项，索引为1）
+    ui->VListShowBox->setCurrentIndex(1);
+
     qnode.start();
 }
 
@@ -158,7 +162,7 @@ void MainWindow::on_ModelListShowBox_currentIndexChanged(const QString &modelnam
 {
     //切换模型时加锁
     //std::lock_guard<std::mutex> lock(model_mutex);
-    
+
     //qDebug() << "ModelListShowBox Acquired lock";
 
     QString model_path = QCoreApplication::applicationDirPath() + "/../../../src/yolov8qt/weights/" + modelname;
@@ -179,6 +183,23 @@ void MainWindow::on_ModelListShowBox_currentIndexChanged(const QString &modelnam
 
     // // 重新设置 CUDA 设备
     // cudaSetDevice(0);
+}
+
+void MainWindow::on_VListShowBox_currentTextChanged(const QString &voltage_text)
+{
+    // 从文本中提取电压值（例如 "110kV" -> 110.0）
+    QString voltage_number = voltage_text;
+    voltage_number.remove("kV");  // 移除单位
+
+    bool ok;
+    double voltage_kv = voltage_number.toDouble(&ok);
+
+    if (ok && voltage_kv > 0) {
+        qnode.setVoltage(voltage_kv);
+        qDebug() << "主窗口：电压等级已切换为 " << voltage_kv << " kV";
+    } else {
+        qDebug() << "警告：无效的电压值 - " << voltage_text;
+    }
 }
 
 // void MainWindow::on_ResultImgShowLabel_clicked(int x, int y){
