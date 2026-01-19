@@ -144,6 +144,10 @@ void readConfig(const string& filename, vector<Line>& lines, vector<Point>& poin
     // 将电压从kV转换为V
     double voltage_v = voltage_kv * 1000.0;
 
+    std::cout << "【配置文件读取】导线配置文件加载" << std::endl;
+    std::cout << "  输入电压等级: " << voltage_kv << " kV (" << voltage_v << " V)" << std::endl;
+    std::cout << "  导线数量: " << n_line << ", 点电荷数量: " << n_point << std::endl;
+
     for (int i = 0; i < n_line; ++i) {
         file >> lines[i].x1 >> lines[i].y1 >> lines[i].z1;
         file >> lines[i].x2 >> lines[i].y2 >> lines[i].z2;
@@ -163,6 +167,11 @@ void readConfig(const string& filename, vector<Line>& lines, vector<Point>& poin
         double realPart = voltage_v * cos(phase_rad);
         double imagPart = voltage_v * sin(phase_rad);
         lines[i].V = complex<double>(realPart, imagPart);
+
+        // 打印每条导线的电压信息
+        std::cout << "  导线 " << (i + 1) << ": 相位角 = " << phase_angle << "°"
+                  << " → 复数电压 = (" << realPart << ", " << imagPart << ") V"
+                  << " (模长 = " << abs(lines[i].V) << " V)" << std::endl;
     }
 
     for (int i = 0; i < n_point; ++i) {
@@ -183,9 +192,15 @@ void readConfig(const string& filename, vector<Line>& lines, vector<Point>& poin
         double realPart = voltage_v * cos(phase_rad);
         double imagPart = voltage_v * sin(phase_rad);
         points[i].V = complex<double>(realPart, imagPart);
+
+        // 打印每个点电荷的电压信息
+        std::cout << "  点电荷 " << (i + 1) << ": 相位角 = " << phase_angle << "°"
+                  << " → 复数电压 = (" << realPart << ", " << imagPart << ") V"
+                  << " (模长 = " << abs(points[i].V) << " V)" << std::endl;
     }
 
     file >> epsilon >> Px >> Py >> Pz;
+    std::cout << "  测点坐标: (" << Px << ", " << Py << ", " << Pz << ") m" << std::endl;
 }
 
 void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv) {
@@ -204,6 +219,10 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
 
     // 将电压从kV转换为V
     double voltage_v = voltage_kv * 1000.0;
+
+    std::cout << "【配置文件读取】开关配置文件加载" << std::endl;
+    std::cout << "  输入电压等级: " << voltage_kv << " kV (" << voltage_v << " V)" << std::endl;
+    std::cout << "  导线数量: " << n_line << ", 点电荷数量: " << n_point << std::endl;
 
     for (int i = 0; i < n_line; ++i) {
         file >> lines[i].x1 >> lines[i].y1 >> lines[i].z1;
@@ -224,6 +243,11 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
         double realPart = voltage_v * cos(phase_rad);
         double imagPart = voltage_v * sin(phase_rad);
         lines[i].V = complex<double>(realPart, imagPart);
+
+        // 打印每条导线的电压信息
+        std::cout << "  导线 " << (i + 1) << ": 相位角 = " << phase_angle << "°"
+                  << " → 复数电压 = (" << realPart << ", " << imagPart << ") V"
+                  << " (模长 = " << abs(lines[i].V) << " V)" << std::endl;
         // lines[i].z1 = Pz + 1;  // 假设开关长度=2m，开关端点1的z坐标为Pz+1
         // lines[i].z2 = Pz - 1;  // 开关端点2的z坐标为Pz-1
     }
@@ -246,9 +270,15 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
         double realPart = voltage_v * cos(phase_rad);
         double imagPart = voltage_v * sin(phase_rad);
         points[i].V = complex<double>(realPart, imagPart);
+
+        // 打印每个点电荷的电压信息
+        std::cout << "  点电荷 " << (i + 1) << ": 相位角 = " << phase_angle << "°"
+                  << " → 复数电压 = (" << realPart << ", " << imagPart << ") V"
+                  << " (模长 = " << abs(points[i].V) << " V)" << std::endl;
     }
 
     file >> epsilon >> Px >> Py >> Pz;
+    std::cout << "  测点坐标: (" << Px << ", " << Py << ", " << Pz << ") m" << std::endl;
 }
 
 // 封装的函数：计算电场

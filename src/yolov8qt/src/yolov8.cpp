@@ -651,6 +651,8 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
 
             // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
             // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 powerline_config.txt 中的测点坐标
+            std::cout << "==================== 导线电场计算 ====================" << std::endl;
+            std::cout << "当前使用电压等级: " << voltage_kv_ << " kV" << std::endl;
             std::vector<double> E_simulation = calculateElectricField(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_);
             // std::vector<double> E_simulation = calculateElectricField(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_);
 
@@ -666,6 +668,7 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
             // 打印模拟电荷法计算的电场强度（峰值）和转换后的有效值
             std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
+            std::cout << "====================================================" << std::endl;
             // 原代码：比较comsol和各个方向分量（已注释）
             // if((abs(comsol_point[3] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(comsol_point[4] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(comsol_point[5] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(comsol_point[6] - rj6k_datas.data[4]) <= CHARGED_THRES) || (abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES)){
             // 新代码
@@ -685,12 +688,15 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
 
             // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
             // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 kaiguan_config.txt 中的测点坐标
+            std::cout << "==================== 开关电场计算 ====================" << std::endl;
+            std::cout << "当前使用电压等级: " << voltage_kv_ << " kV" << std::endl;
             std::vector<double> E_simulation = calculateElectricField_kaiguan(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/kaiguan_config.txt", voltage_kv_);
             // std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
             // RJ6K 实测电场强度数据：(综合场强， x方向分量， y方向分量， z方向分量， 综合场强@50 Hz)，如果实测值是有效值，还要乘以根号2。才能与计算值进行比较
             std::cout << "实测电场强度为：(" << rj6k_datas.data[1] << ", " << rj6k_datas.data[2] << ", " << rj6k_datas.data[3] << ", " << rj6k_datas.data[4] << ") V/m" << std::endl;
             // 打印模拟电荷法计算的电场强度（峰值）和转换后的有效值
             std::cout << "计算电场强度为：(" << E_simulation[0] << ", " << E_simulation[1] << ", " << E_simulation[2] << ", " << E_simulation[3] << ") V/m" << std::endl;
+            std::cout << "====================================================" << std::endl;
             // 原代码：比较各个方向分量（已注释）
             // if(abs(E_simulation[0] - rj6k_datas.data[1]) <= CHARGED_THRES && abs(E_simulation[1] - rj6k_datas.data[2]) <= CHARGED_THRES && abs(E_simulation[2] - rj6k_datas.data[3]) <= CHARGED_THRES && abs(E_simulation[3] - rj6k_datas.data[4]) <= CHARGED_THRES){
             // 新代码
