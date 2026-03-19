@@ -234,5 +234,9 @@ void QNode::DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_m
 void QNode::RJ6KCallback(const yolov8qt::RJ6KData::ConstPtr& rj6k_msg){
     rj6k_data = *rj6k_msg;
     printf("Received RJ6KData!\n");
-    std::cout << rj6k_data.data[4] << std::endl;
+    std::cout << "综合电场强度：" << rj6k_data.data[0] << " V/m" << std::endl;
+    std::cout << "X轴电场强度：" << rj6k_data.data[1] << " V/m" << std::endl;
+    std::cout << "Y轴电场强度：" << rj6k_data.data[2] << " V/m" << std::endl;
+    std::cout << "Z轴电场强度：" << rj6k_data.data[3] << " V/m" << std::endl;
+    std::cout << "50Hz频点综合电场：" << rj6k_data.data[4] << " V/m" << std::endl;
 }
