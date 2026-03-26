@@ -127,7 +127,8 @@ void QNode::DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_m
         auto end_time = std::chrono::system_clock::now();
         auto duration_time = (double)std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time).count() / 1000;
         yolov8->result_FPS = int(1000/duration_time);
-        emit DataReceived(qimage, yolov8->result_FPS, QStringLiteral("未选择检测框"), 0.0, 0.0, 0.0, QStringLiteral("未选择检测框"));
+        float rj6k_electric = (rj6k_data.data.size() > 4) ? rj6k_data.data[4] : 0.0;
+        emit DataReceived(qimage, yolov8->result_FPS, QStringLiteral("未选择检测框"), 0.0, 0.0, rj6k_electric, QStringLiteral("未选择检测框"));
         return;
     }
     // auto end_time = std::chrono::system_clock::now();
