@@ -1,13 +1,14 @@
 #ifndef QNODE_H
 #define QNODE_H
 
+#include <mutex>
+#include <string>
+
 #include <pcl_conversions/pcl_conversions.h>
-#include "yolov8.h"
-// #include <opencv2/opencv.hpp>
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
-#include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/Imu.h>
+#include <sensor_msgs/PointCloud2.h>
 #include <cv_bridge/cv_bridge.h>
 #include <QObject>
 #include <QImage>
@@ -16,7 +17,8 @@
 #include <message_filters/time_synchronizer.h>
 #include <message_filters/sync_policies/approximate_time.h>
 #include <sensor_msgs/image_encodings.h>
-#include <mutex>
+
+#include "yolov8.h"
 
 class QNode : public QThread{
     Q_OBJECT
@@ -39,9 +41,12 @@ public slots:
 
 private:
     void DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_msgs::PointCloud2ConstPtr& pc);
+    void GravityCorrectPointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& pc);
+    bool CorrectPointCloudByImu(const sensor_msgs::PointCloud2& input, sensor_msgs::PointCloud2& output) const;
     void RJ6KCallback(const yolov8qt::RJ6KData::ConstPtr& rj6k_msg);
     // void DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_msgs::PointCloud2ConstPtr& pc, const yolov8qt::RJ6KData::ConstPtr& rj6k_msg);
     void IMUCallback(const sensor_msgs::Imu::ConstPtr& imu_msg);
+
 private:
     int init_argc;
     char** init_argv;
@@ -51,6 +56,7 @@ private:
     // message_filters::Subscriber<yolov8qt::RJ6KData> rj6k_sub;
     ros::Subscriber rj6k_sub;
     ros::Subscriber imu_sub;
+    ros::Subscriber gravity_test_pointcloud_sub;
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
     // typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2, yolov8qt::RJ6KData> MySyncPolicy;
     std::shared_ptr<message_filters::Synchronizer<MySyncPolicy>> sync;
@@ -58,6 +64,7 @@ private:
     ros::Publisher image_pub;
     ros::Publisher pub_bounding_boxes;
     ros::Publisher pub_obj_height;
+    ros::Publisher gravity_test_pointcloud_pub;
     cv::Mat image;
     cv::Mat image_result;
     std::vector<Object> objects;
@@ -71,8 +78,9 @@ private:
     QImage qimage;
     bool is_clicked;
     QPoint click_pos;
-    std::mutex model_mutex;  //模型切换时的互斥锁
+    bool gravity_test_accel_points_up = true;
+    std::string gravity_test_frame_suffix = "_gravity_aligned";
+    std::mutex model_mutex;
 };
-
 
 #endif // QNODE_H
