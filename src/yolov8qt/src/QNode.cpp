@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 
 yolov8qt::RJ6KData rj6k_data;
+sensor_msgs::Imu imu_data;
 
 QNode::QNode(int argc, char** argv) : init_argc(argc), init_argv(argv), is_clicked(false){
     qDebug() << "QNode constructor called";
@@ -50,6 +51,7 @@ bool QNode::init(){
     pointcloud_sub.subscribe(nh, "/livox/lidar", 1);
     // rj6k_sub.subscribe(nh, "/rj6k_data", 1);
     rj6k_sub = nh.subscribe<yolov8qt::RJ6KData>("/rj6k_data", 1, &QNode::RJ6KCallback, this);
+    imu_sub = nh.subscribe<sensor_msgs::Imu>("/livox/imu", 1, &QNode::IMUCallback, this);
     sync.reset(new message_filters::Synchronizer<MySyncPolicy>(MySyncPolicy(10), image_sub, pointcloud_sub));
     // sync.reset(new message_filters::Synchronizer<MySyncPolicy>(MySyncPolicy(50), image_sub, pointcloud_sub, rj6k_sub));
     // sync->setInterMessageLowerBound(ros::Duration(0.099));
@@ -102,6 +104,7 @@ void QNode::DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_m
         return;
     }
     yolov8->rj6k_datas = rj6k_data;
+    yolov8->imu_data = imu_data;
     yolov8->point_cloud_header_ = pc->header;
     pcl::PointCloud<pcl::PointXYZ>::Ptr input(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*pc, *input);
@@ -240,4 +243,8 @@ void QNode::RJ6KCallback(const yolov8qt::RJ6KData::ConstPtr& rj6k_msg){
     std::cout << "Y轴电场强度：" << rj6k_data.data[2] << " V/m" << std::endl;
     std::cout << "Z轴电场强度：" << rj6k_data.data[3] << " V/m" << std::endl;
     std::cout << "50Hz频点综合电场：" << rj6k_data.data[4] << " V/m" << std::endl;
+}
+
+void QNode::IMUCallback(const sensor_msgs::Imu::ConstPtr& imu_msg){
+    imu_data = *imu_msg;
 }

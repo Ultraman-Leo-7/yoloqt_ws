@@ -637,7 +637,29 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
         std::cout << "开始处理电场强度" << std::endl;
 
         if(bbox_name == "muxian"){
-            obj_height.data = obj_info.centroid_.z + leida_lidigaodu;  //要发布的变电设备高度话题
+            // 利用IMU加速度计数据修正倾斜雷达的高度计算
+            // IMU的linear_acceleration在静态时测量的是重力加速度的反方向
+            // 重力方向单位向量 g_hat = -acc / |acc|，点云质心在重力方向上的投影即为真实垂直高度
+            float ax = imu_data.linear_acceleration.x;
+            float ay = imu_data.linear_acceleration.y;
+            float az = imu_data.linear_acceleration.z;
+            float acc_norm = std::sqrt(ax * ax + ay * ay + az * az);
+
+            float corrected_height;
+            if(acc_norm > 0.1f){  // IMU数据有效
+                // 重力方向单位向量（指向地面）= -加速度方向
+                float gx = -ax / acc_norm;
+                float gy = -ay / acc_norm;
+                float gz = -az / acc_norm;
+                // 质心在重力方向上的投影（负号表示离地高度为正值，因为重力向下而目标在上方）
+                corrected_height = -(obj_info.centroid_.x * gx + obj_info.centroid_.y * gy + obj_info.centroid_.z * gz);
+                std::cout << "IMU修正高度: " << corrected_height << " m (原始Z: " << obj_info.centroid_.z << " m)" << std::endl;
+            } else {
+                // IMU数据无效，回退到原始Z值
+                corrected_height = obj_info.centroid_.z;
+                std::cout << "IMU数据无效，使用原始Z值: " << corrected_height << " m" << std::endl;
+            }
+            obj_height.data = corrected_height + leida_lidigaodu;  //要发布的变电设备高度话题
 
             // ==================== 重要说明：测点坐标来源 ====================
             // 1. calculateElectricField 函数的测点坐标来自 powerline_config.txt 文件的最后一行

@@ -7,6 +7,7 @@
 #include <ros/ros.h>
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
+#include <sensor_msgs/Imu.h>
 #include <cv_bridge/cv_bridge.h>
 #include <QObject>
 #include <QImage>
@@ -40,6 +41,7 @@ private:
     void DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_msgs::PointCloud2ConstPtr& pc);
     void RJ6KCallback(const yolov8qt::RJ6KData::ConstPtr& rj6k_msg);
     // void DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_msgs::PointCloud2ConstPtr& pc, const yolov8qt::RJ6KData::ConstPtr& rj6k_msg);
+    void IMUCallback(const sensor_msgs::Imu::ConstPtr& imu_msg);
 private:
     int init_argc;
     char** init_argv;
@@ -48,6 +50,7 @@ private:
     message_filters::Subscriber<sensor_msgs::PointCloud2> pointcloud_sub;
     // message_filters::Subscriber<yolov8qt::RJ6KData> rj6k_sub;
     ros::Subscriber rj6k_sub;
+    ros::Subscriber imu_sub;
     typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2> MySyncPolicy;
     // typedef message_filters::sync_policies::ApproximateTime<sensor_msgs::Image, sensor_msgs::PointCloud2, yolov8qt::RJ6KData> MySyncPolicy;
     std::shared_ptr<message_filters::Synchronizer<MySyncPolicy>> sync;

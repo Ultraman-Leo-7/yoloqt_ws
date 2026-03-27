@@ -17,6 +17,7 @@
 #include <std_msgs/Header.h>
 #include <std_msgs/Float64MultiArray.h>
 #include <yolov8qt/RJ6KData.h>
+#include <sensor_msgs/Imu.h>
 #include <jsk_recognition_msgs/BoundingBox.h>
 #include <jsk_recognition_msgs/BoundingBoxArray.h>
 #include <vector>
@@ -113,6 +114,8 @@ public:
     std_msgs::Float32 obj_height;   // 变电设备的高度，用于实时更新COMSOL模型的高度参数
     // RJ6K 实测电场强度数据,有5个数据：(综合场强， x方向分量， y方向分量， z方向分量， 综合场强@50 Hz)
     yolov8qt::RJ6KData rj6k_datas;
+    // IMU 数据，用于获取重力方向以修正倾斜雷达的高度计算
+    sensor_msgs::Imu imu_data;
 
     //下面 6 个字符串用于在QT界面显示检测结果
     std::string result_modelname; 
