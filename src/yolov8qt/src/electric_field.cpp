@@ -127,7 +127,7 @@ double integrate(function<double(double)> f, double a, double b, double tol) {
 }
 
 // 从文件读取配置
-void readConfig(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv) {
+void readConfig(const string& filename, vector<Line>& lines, vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv, double obj_height) {
     ifstream file(filename);
     if (!file.is_open()) {
         cerr << "无法打开文件: " << filename << endl;
@@ -147,12 +147,17 @@ void readConfig(const string& filename, vector<Line>& lines, vector<Point>& poin
     std::cout << "【配置文件读取】导线配置文件加载" << std::endl;
     std::cout << "  输入电压等级: " << voltage_kv << " kV (" << voltage_v << " V)" << std::endl;
     std::cout << "  导线数量: " << n_line << ", 点电荷数量: " << n_point << std::endl;
+    std::cout << "  实测母线高度: " << obj_height << " m (将替换配置文件中的导线Z坐标)" << std::endl;
 
     for (int i = 0; i < n_line; ++i) {
         file >> lines[i].x1 >> lines[i].y1 >> lines[i].z1;
         file >> lines[i].x2 >> lines[i].y2 >> lines[i].z2;
         file >> lines[i].r;
         file >> phase_angle;
+
+        // 用实测高度替换配置文件中的导线端点Z坐标
+        lines[i].z1 = obj_height;
+        lines[i].z2 = obj_height;
 
         // 验证相位角是否有效
         if (file.fail()) {
@@ -170,6 +175,7 @@ void readConfig(const string& filename, vector<Line>& lines, vector<Point>& poin
 
         // 打印每条导线的电压信息
         std::cout << "  导线 " << (i + 1) << ": 相位角 = " << phase_angle << "°"
+                  << ", Z坐标(高度) = " << obj_height << " m"
                   << " → 复数电压 = (" << realPart << ", " << imagPart << ") V"
                   << " (模长 = " << abs(lines[i].V) << " V)" << std::endl;
     }
@@ -282,13 +288,13 @@ void readConfig_kaiguan(const string& filename, vector<Line>& lines, vector<Poin
 }
 
 // 封装的函数：计算电场
-vector<double> calculateElectricField(double Px, double Py, double Pz, const string& config_file, double voltage_kv) {
+vector<double> calculateElectricField(double Px, double Py, double Pz, const string& config_file, double voltage_kv, double obj_height) {
     vector<Line> lines;
     vector<Point> points;
     double epsilon;
 
-    // 读取配置文件
-    readConfig(config_file, lines, points, epsilon, Px, Py, Pz, voltage_kv);
+    // 读取配置文件，并用实测高度替换导线Z坐标
+    readConfig(config_file, lines, points, epsilon, Px, Py, Pz, voltage_kv, obj_height);
 
     // 构建电位系数矩阵并求解电荷密度
     MatrixXcd A(lines.size() + points.size(), lines.size() + points.size());

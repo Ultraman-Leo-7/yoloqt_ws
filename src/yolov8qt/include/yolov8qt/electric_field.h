@@ -18,10 +18,10 @@ struct Point {
 };
 
 // 函数声明
-void readConfig(const std::string& filename, std::vector<Line>& lines, std::vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv);
+void readConfig(const std::string& filename, std::vector<Line>& lines, std::vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv, double obj_height);
 void readConfig_kaiguan(const std::string& filename, std::vector<Line>& lines, std::vector<Point>& points, double& epsilon, double& Px, double& Py, double& Pz, double voltage_kv);
 
-std::vector<double> calculateElectricField(double Px, double Py, double Pz, const std::string& config_file, double voltage_kv);
+std::vector<double> calculateElectricField(double Px, double Py, double Pz, const std::string& config_file, double voltage_kv, double obj_height);
 std::vector<double> calculateElectricField_kaiguan(double Px, double Py, double Pz, const std::string& config_file, double voltage_kv);
 
 

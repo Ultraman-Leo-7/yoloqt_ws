@@ -661,27 +661,24 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             }
             obj_height.data = corrected_height + leida_lidigaodu;  //要发布的变电设备高度话题
 
-            // ==================== 重要说明：测点坐标来源 ====================
-            // 1. calculateElectricField 函数的测点坐标来自 powerline_config.txt 文件的最后一行
-            //    当前配置：测点坐标为 (5, 0, 2)
-            //    注意：传入的前三个参数 (xc, yc, zc) 会被配置文件中的值覆盖，因此传入任何值都无效
-            //    函数内部会调用 readConfig()，该函数会从配置文件读取并覆盖传入的坐标参数
+            // ==================== 重要说明：电场计算参数来源 ====================
+            // 1. 导线高度（Z坐标）：使用点云测量得到的实测高度 obj_height.data
+            //    该值会替换 powerline_config.txt 中所有导线端点的 Z 坐标
             //
-            // 2. findNearestPoint 函数使用的测点坐标来自 cloud_config.txt 中的 (xc, yc, zc)
+            // 2. 测点坐标：来自 powerline_config.txt 文件的最后一行
+            //    当前配置：测点坐标为 (0, 0, 2)
+            //    注意：传入的前三个参数 (0, 0, 0) 会被配置文件中的值覆盖
+            //
+            // 3. findNearestPoint 函数使用的测点坐标来自 cloud_config.txt 中的 (xc, yc, zc)
             //    当前配置：测点坐标为 (4.0, 0.0, 2.0)
-            //    注意：该函数真正使用传入的参数进行计算
-            //
-            // 3. 结论：两个函数计算的是不同位置的电场强度！
-            //    - calculateElectricField 计算的是 (5, 0, 2) 处的电场
-            //    - findNearestPoint 查找的是距离 (4.0, 0.0, 2.0) 最近的 COMSOL 仿真点
-            //    两者在 x 方向相差 1 米
             // ================================================================
 
             // 模拟电荷法计算电场强度 (Ex, Ey, Ez, normE)
-            // 传入 (0, 0, 0) 是为了明确表示这些参数会被忽略，实际使用 powerline_config.txt 中的测点坐标
+            // 传入 obj_height.data 作为实测母线高度，用于替换配置文件中的导线Z坐标
             std::cout << "==================== 导线电场计算 ====================" << std::endl;
             std::cout << "当前使用电压等级: " << voltage_kv_ << " kV" << std::endl;
-            std::vector<double> E_simulation = calculateElectricField(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_);
+            std::cout << "实测母线高度: " << obj_height.data << " m" << std::endl;
+            std::vector<double> E_simulation = calculateElectricField(0, 0, 0, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_, obj_height.data);
             // std::vector<double> E_simulation = calculateElectricField(-obj_info.centroid_.y, -obj_info.centroid_.z, obj_info.centroid_.x, "/home/icebear/MyProjects/ROSProjects/yoloqt_ws/src/yolov8qt/config/powerline_config.txt", voltage_kv_);
 
             // 从 COMSOL 仿真结果表中查找距离观测点 (xc, yc, zc) 最近的点的电场强度仿真值
