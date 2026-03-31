@@ -1,34 +1,10 @@
 #include "../include/yolov8qt/QNode.h"
-#include <cmath>
-#include <Eigen/Geometry>
 #include <QDebug>
 #include <QDir>
 #include <QCoreApplication>
-#include <sensor_msgs/point_cloud2_iterator.h>
 
 yolov8qt::RJ6KData rj6k_data;
 sensor_msgs::Imu imu_data;
-
-namespace {
-
-std::string BuildGravityAlignedFrameId(const std::string& original_frame_id, const std::string& suffix) {
-    if (suffix.empty()) {
-        return original_frame_id;
-    }
-
-    if (original_frame_id.empty()) {
-        return "gravity_aligned";
-    }
-
-    if (original_frame_id.size() >= suffix.size() &&
-        original_frame_id.compare(original_frame_id.size() - suffix.size(), suffix.size(), suffix) == 0) {
-        return original_frame_id;
-    }
-
-    return original_frame_id + suffix;
-}
-
-}  // namespace
 
 QNode::QNode(int argc, char** argv) : init_argc(argc), init_argv(argv), is_clicked(false){
     qDebug() << "QNode constructor called";
@@ -70,16 +46,12 @@ bool QNode::init(){
     image_pub = nh.advertise<sensor_msgs::Image>("/detect/image_raw", 1);
     pub_bounding_boxes = nh.advertise<jsk_recognition_msgs::BoundingBoxArray>("/detect/detected_bounding_boxes", 1);
     pub_obj_height = nh.advertise<std_msgs::Float32>("/detect/obj_height", 1);
-    gravity_test_pointcloud_pub = nh.advertise<sensor_msgs::PointCloud2>("/livox/lidar_gravity_aligned", 1);
-    nh.param("gravity_test_accel_points_up", gravity_test_accel_points_up, true);
-    nh.param<std::string>("gravity_test_frame_suffix", gravity_test_frame_suffix, "_gravity_aligned");
     // sync.reset(new message_filters::Synchronizer<MySyncPolicy>(MySyncPolicy(10), image_sub, pointcloud_sub));
     image_sub.subscribe(nh, "/camera/color/image_raw", 1);
     pointcloud_sub.subscribe(nh, "/livox/lidar", 1);
     // rj6k_sub.subscribe(nh, "/rj6k_data", 1);
     rj6k_sub = nh.subscribe<yolov8qt::RJ6KData>("/rj6k_data", 1, &QNode::RJ6KCallback, this);
     imu_sub = nh.subscribe<sensor_msgs::Imu>("/livox/imu", 1, &QNode::IMUCallback, this);
-    gravity_test_pointcloud_sub = nh.subscribe<sensor_msgs::PointCloud2>("/livox/lidar", 1, &QNode::GravityCorrectPointCloudCallback, this);
     sync.reset(new message_filters::Synchronizer<MySyncPolicy>(MySyncPolicy(10), image_sub, pointcloud_sub));
     // sync.reset(new message_filters::Synchronizer<MySyncPolicy>(MySyncPolicy(50), image_sub, pointcloud_sub, rj6k_sub));
     // sync->setInterMessageLowerBound(ros::Duration(0.099));
@@ -189,55 +161,6 @@ void QNode::DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_m
     
     yolov8->result_FPS = int(1000/duration_time);
     emit DataReceived(qimage, yolov8->result_FPS, QString::fromStdString(yolov8->result_class), yolov8->result_conf, yolov8->result_distance, yolov8->result_electricity, QString::fromStdString(yolov8->result_state));
-}
-
-void QNode::GravityCorrectPointCloudCallback(const sensor_msgs::PointCloud2ConstPtr& pc) {
-    if (!pc) {
-        return;
-    }
-
-    sensor_msgs::PointCloud2 corrected_cloud;
-    if (!CorrectPointCloudByImu(*pc, corrected_cloud)) {
-        ROS_WARN_THROTTLE(2.0, "Waiting for valid IMU acceleration before publishing gravity-aligned point cloud.");
-        return;
-    }
-
-    gravity_test_pointcloud_pub.publish(corrected_cloud);
-}
-
-bool QNode::CorrectPointCloudByImu(const sensor_msgs::PointCloud2& input, sensor_msgs::PointCloud2& output) const {
-    const auto& accel = imu_data.linear_acceleration;
-    if (!std::isfinite(accel.x) || !std::isfinite(accel.y) || !std::isfinite(accel.z)) {
-        return false;
-    }
-
-    Eigen::Vector3f accel_vector(accel.x, accel.y, accel.z);
-    if (accel_vector.norm() < 1e-3f) {
-        return false;
-    }
-
-    Eigen::Vector3f up_direction = gravity_test_accel_points_up ? accel_vector.normalized() : -accel_vector.normalized();
-    Eigen::Quaternionf rotation = Eigen::Quaternionf::FromTwoVectors(up_direction, Eigen::Vector3f::UnitZ());
-
-    output = input;
-    output.header.frame_id = BuildGravityAlignedFrameId(input.header.frame_id, gravity_test_frame_suffix);
-
-    sensor_msgs::PointCloud2Iterator<float> iter_x(output, "x");
-    sensor_msgs::PointCloud2Iterator<float> iter_y(output, "y");
-    sensor_msgs::PointCloud2Iterator<float> iter_z(output, "z");
-
-    for (; iter_x != iter_x.end(); ++iter_x, ++iter_y, ++iter_z) {
-        if (!std::isfinite(*iter_x) || !std::isfinite(*iter_y) || !std::isfinite(*iter_z)) {
-            continue;
-        }
-
-        const Eigen::Vector3f rotated_point = rotation * Eigen::Vector3f(*iter_x, *iter_y, *iter_z);
-        *iter_x = rotated_point.x();
-        *iter_y = rotated_point.y();
-        *iter_z = rotated_point.z();
-    }
-
-    return true;
 }
 
 
