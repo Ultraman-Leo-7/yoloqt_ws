@@ -422,13 +422,30 @@ void YOLOv8::PointCloudVoxelFilter(){
 
     if(cloud->empty()){
         ROS_WARN("体素滤波后的 cloud 点云为空");
+        return;
     }
-    // // 可视化过滤后的点云
-    // viewer_srcCloud->removeAllPointClouds();
-    // viewer_srcCloud->removeAllShapes();
-    // viewer_srcCloud->addPointCloud(cloud, "filtered_cloud");
-    // viewer_srcCloud->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "filtered_cloud");
-    // viewer_srcCloud->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_COLOR, 0.0, 1.0, 0.0, "filtered_cloud"); // 设置体素滤波后的点云颜色为绿色
+
+    // 剔除投影在图像范围之外的点云（只保留相机视野内的点）
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_in_image(new pcl::PointCloud<pcl::PointXYZ>);
+    cloud_in_image->reserve(cloud->size());
+    cv::Mat X_proj(4, 1, cv::DataType<double>::type);
+    cv::Mat Y_proj(3, 1, cv::DataType<double>::type);
+    cv::Mat projection_mat = proj.i_params.cameraIn * proj.i_params.camtocam_mat * proj.i_params.RT;
+    for (const auto& pt : cloud->points) {
+        X_proj.at<double>(0, 0) = pt.x;
+        X_proj.at<double>(1, 0) = pt.y;
+        X_proj.at<double>(2, 0) = pt.z;
+        X_proj.at<double>(3, 0) = 1;
+        Y_proj = projection_mat * X_proj;
+        double z_cam = Y_proj.at<double>(2, 0);
+        if (z_cam <= 0) continue;  // 在相机背后
+        double u = Y_proj.at<double>(0, 0) / z_cam;
+        double v = Y_proj.at<double>(1, 0) / z_cam;
+        if (u >= 0 && u < 1280 && v >= 0 && v < 720) {
+            cloud_in_image->push_back(pt);
+        }
+    }
+    cloud->swap(*cloud_in_image);
 
 }
 
@@ -561,9 +578,10 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
         this->result_state = "未知";
         return;
     }
-    std::cout << "local_indices 不为空" << std::endl;
+    std::cout << "local_indices 不为空, 聚类数量: " << local_indices.size() << std::endl;
 
-    //std::cout << bbox_name + " 内聚类的数量: " << local_indices.size() << std::endl;
+    // 先收集所有簇的信息，然后选取中心点X最小（离相机最近）的簇
+    std::vector<Detected_Obj> all_clusters;
     for(size_t i = 0; i < local_indices.size(); ++i){
         Detected_Obj obj_info;
         float min_x = std::numeric_limits<float>::max();
@@ -598,45 +616,46 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             obj_info.centroid_.y /= local_indices[i].indices.size();
             obj_info.centroid_.z /= local_indices[i].indices.size();
         }
+        all_clusters.push_back(obj_info);
+        std::cout << "Cluster " << i << " 中心点: ("
+                  << obj_info.centroid_.x << ", " << obj_info.centroid_.y << ", " << obj_info.centroid_.z
+                  << "), centroid_x = " << obj_info.centroid_.x << std::endl;
+    }
 
-        // 输出每个聚类中心点的坐标和到原点的距离
-        float distance_to_origin = std::sqrt(std::pow(obj_info.centroid_.x, 2) +
-                                             std::pow(obj_info.centroid_.y, 2) +
-                                             std::pow(obj_info.centroid_.z, 2));
+    // 选取中心点X最小的簇（离相机最近）
+    size_t nearest_idx = 0;
+    for(size_t i = 1; i < all_clusters.size(); ++i){
+        if(all_clusters[i].centroid_.x < all_clusters[nearest_idx].centroid_.x){
+            nearest_idx = i;
+        }
+    }
+    std::cout << "选取最近簇: Cluster " << nearest_idx << ", centroid_x = " << all_clusters[nearest_idx].centroid_.x << std::endl;
 
-        this->result_distance = distance_to_origin;
-        // std::cout << bbox_name + "中的 Cluster" << i << " 的中心点坐标: ("
-        //           << obj_info.centroid_.x << ", "
-        //           << obj_info.centroid_.y << ", "
-        //           << obj_info.centroid_.z << ")"
-        //           << " 中心到雷达的距离: " << distance_to_origin << std::endl;
+    Detected_Obj& obj_info = all_clusters[nearest_idx];
 
-        //计算点云bounding box
-        double length_ = obj_info.max_point_.x - obj_info.min_point_.x;
-        double width_ = obj_info.max_point_.y - obj_info.min_point_.y;
-        double height_ = obj_info.max_point_.z - obj_info.min_point_.z;
+    float distance_to_origin = std::sqrt(std::pow(obj_info.centroid_.x, 2) +
+                                         std::pow(obj_info.centroid_.y, 2) +
+                                         std::pow(obj_info.centroid_.z, 2));
+    this->result_distance = distance_to_origin;
 
-        obj_info.bounding_box_.header = point_cloud_header_;
+    //计算点云bounding box
+    double length_ = obj_info.max_point_.x - obj_info.min_point_.x;
+    double width_ = obj_info.max_point_.y - obj_info.min_point_.y;
+    double height_ = obj_info.max_point_.z - obj_info.min_point_.z;
 
-        obj_info.bounding_box_.pose.position.x = obj_info.min_point_.x + length_ / 2;
-        obj_info.bounding_box_.pose.position.y = obj_info.min_point_.y + width_ / 2;
-        obj_info.bounding_box_.pose.position.z = obj_info.min_point_.z + height_ / 2;
+    obj_info.bounding_box_.header = point_cloud_header_;
+    obj_info.bounding_box_.pose.position.x = obj_info.min_point_.x + length_ / 2;
+    obj_info.bounding_box_.pose.position.y = obj_info.min_point_.y + width_ / 2;
+    obj_info.bounding_box_.pose.position.z = obj_info.min_point_.z + height_ / 2;
+    obj_info.bounding_box_.dimensions.x = ((length_ < 0) ? -1 * length_ : length_);
+    obj_info.bounding_box_.dimensions.y = ((width_ < 0) ? -1 * width_ : width_);
+    obj_info.bounding_box_.dimensions.z = ((height_ < 0) ? -1 * height_ : height_);
 
-        obj_info.bounding_box_.dimensions.x = ((length_ < 0) ? -1 * length_ : length_);
-        obj_info.bounding_box_.dimensions.y = ((width_ < 0) ? -1 * width_ : width_);
-        obj_info.bounding_box_.dimensions.z = ((height_ < 0) ? -1 * height_ : height_);
+    obj_list.push_back(obj_info);
 
-        // viewer_srcCloud->addCube(obj_info.min_point_.x, obj_info.max_point_.x,
-        //                          obj_info.min_point_.y, obj_info.max_point_.y,
-        //                          obj_info.min_point_.z, obj_info.max_point_.z,
-        //                          1.0, 1.0, 0.0, bbox_name + "cube_" + std::to_string(i));
-        // viewer_srcCloud->setShapeRenderingProperties(pcl::visualization::PCL_VISUALIZER_REPRESENTATION, pcl::visualization::PCL_VISUALIZER_REPRESENTATION_WIREFRAME, bbox_name + "cube_" + std::to_string(i));
+    std::cout << "开始处理电场强度" << std::endl;
 
-        obj_list.push_back(obj_info);
-        
-        std::cout << "开始处理电场强度" << std::endl;
-
-        if(bbox_name == "muxian"){
+    if(bbox_name == "muxian"){
             // 利用IMU加速度计数据修正倾斜雷达的高度计算
             // IMU的linear_acceleration在静态时测量的是重力加速度的反方向
             // 重力方向单位向量 g_hat = -acc / |acc|，点云质心在重力方向上的投影即为真实垂直高度
@@ -732,9 +751,9 @@ void YOLOv8::CloudCluster(pcl::PointCloud<pcl::PointXYZ>::Ptr bbox_cloud, const 
             else this->result_state = "不带电";
         }
 
-        this->result_electricity = rj6k_datas.data[4];  //QT软件显示的电场强度数据以实测值为准
-    }
+    this->result_electricity = rj6k_datas.data[4];  //QT软件显示的电场强度数据以实测值为准
 }
+
 
 void YOLOv8::infer()
 {
@@ -849,39 +868,36 @@ void YOLOv8::draw_objects(const cv::Point& click_pos, const cv::Mat& image, cv::
         return;
     }
     if(!cloud->empty()){
-        //ROS_INFO("Start Projection");
-        for(pcl::PointCloud<pcl::PointXYZ>::const_iterator it = cloud->points.begin(); it != cloud->points.end(); ++it){
-            if(it->x >maxX || it->x < 0.0 || abs(it->y) > maxY || it->z < minZ) continue;
-            X.at<double>(0, 0) = it->x;
-            X.at<double>(1, 0) = it->y;
-            X.at<double>(2, 0) = it->z;
+        // 投影可视化：cloud已经过X<0剔除和图像范围过滤，无需硬编码预过滤
+        cv::Mat projection_mat = proj.i_params.cameraIn * proj.i_params.camtocam_mat * proj.i_params.RT;
+        for(const auto& pt_cloud : cloud->points){
+            X.at<double>(0, 0) = pt_cloud.x;
+            X.at<double>(1, 0) = pt_cloud.y;
+            X.at<double>(2, 0) = pt_cloud.z;
             X.at<double>(3, 0) = 1;
-            Y = proj.i_params.cameraIn * proj.i_params.camtocam_mat * proj.i_params.RT * X;
+            Y = projection_mat * X;
+            double z_cam = Y.at<double>(2, 0);
+            if(z_cam <= 0) continue;
             cv::Point pt;
-            pt.x = Y.at<double>(0, 0) / Y.at<double>(0, 2);
-            pt.y = Y.at<double>(1, 0) / Y.at<double>(0, 2);
+            pt.x = static_cast<int>(Y.at<double>(0, 0) / z_cam);
+            pt.y = static_cast<int>(Y.at<double>(1, 0) / z_cam);
+            // 在检测框内的点收集到cloud_in_bbox并着色显示
             if(pt.x >= leftTop_x && pt.x <= rightBottom_x && pt.y >= leftTop_y && pt.y <= rightBottom_y){
-                float val = it->x;
+                float val = pt_cloud.x;
                 float maxVal = 20.0;
                 int red = std::min(255, (int)(255 * abs((val - maxVal) / maxVal)));
                 int green = std::min(255, (int)(255 * (1 - abs((val - maxVal) / maxVal))));
                 cv::circle(res, pt, 1, cv::Scalar(0, green, red), -1);
-                cloud_in_bbox->push_back(*it); //收集在当前检测框内的点云
+                cloud_in_bbox->push_back(pt_cloud);
             }
         }
-        // if(!cloud_in_bbox->empty()){
-        //     std::string class_name = CLASS_NAMES[target_obj.label].c_str();
-        //     if(class_name == "muxian") this->PointCloudPassThroughFilter(cloud_in_bbox);
-        //     else if(class_name == "kaiguan") this->PointCloudPassThroughFilterKaiguan(cloud_in_bbox);
-        //     this->CloudCluster(cloud_in_bbox, class_name);  //CloudCluster是成员函数，必须通过类实例来调用
-        // }
-        // else ROS_WARN("cloud_in_bbox 点云为空");
-        std::string class_name = CLASS_NAMES[target_obj.label].c_str();
-        if(class_name == "muxian") this->PointCloudPassThroughFilter(cloud);
-        else if(class_name == "kaiguan") this->PointCloudPassThroughFilterKaiguan(cloud);
-        this->CloudCluster(cloud, class_name);  //CloudCluster是成员函数，必须通过类实例来调用
-        std::cout << "cloud cluster end" << std::endl;
-
+        // 使用cloud_in_bbox进行聚类，不再进行直通滤波
+        if(!cloud_in_bbox->empty()){
+            std::string class_name = CLASS_NAMES[target_obj.label].c_str();
+            this->CloudCluster(cloud_in_bbox, class_name);
+            std::cout << "cloud cluster end" << std::endl;
+        }
+        else ROS_WARN("cloud_in_bbox 点云为空");
     }
     this->result_class = CLASS_NAMES[target_obj.label].c_str();
     this->result_conf = target_obj.prob * 100;

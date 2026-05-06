@@ -136,7 +136,15 @@ void QNode::DetectCallback(const sensor_msgs::ImageConstPtr& msg, const sensor_m
     yolov8->point_cloud_header_ = pc->header;
     pcl::PointCloud<pcl::PointXYZ>::Ptr input(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::fromROSMsg(*pc, *input);
-    yolov8->setInputCloud(input);
+    // 剔除X<0的点云（雷达后方，相机拍不到的区域）
+    pcl::PointCloud<pcl::PointXYZ>::Ptr forward_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    forward_cloud->reserve(input->size());
+    for (const auto& pt : input->points) {
+        if (pt.x >= 0.0f) {
+            forward_cloud->push_back(pt);
+        }
+    }
+    yolov8->setInputCloud(forward_cloud);
     yolov8->PointCloudVoxelFilter();
     image = cv_ptr->image;
     objects.clear();
