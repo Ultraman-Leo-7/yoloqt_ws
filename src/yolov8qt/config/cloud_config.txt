@@ -14,3 +14,4 @@ xc 4.0
 yc 0.0
 zc 2.0
 leida_lidigaodu 1.88
+bbox_scale 2.0

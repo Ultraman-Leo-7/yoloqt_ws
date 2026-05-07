@@ -38,6 +38,9 @@ extern float CLUSTER_DISTANCE;
 //判断是否带电的阈值
 extern float CHARGED_THRES;
 
+//检测框扩大倍数（用于点云收集和可视化）
+extern float BBOX_SCALE;
+
 //观测点坐标
 extern float xc, yc, zc;
 

@@ -11,6 +11,7 @@ float CLUSTER_DISTANCE;
 float CHARGED_THRES;
 float  xc, yc, zc;
 float leida_lidigaodu;
+float BBOX_SCALE;
 
 bool compare_x(pcl::PointXYZ a, pcl::PointXYZ b){
     return (a.x < b.x);
@@ -138,6 +139,7 @@ YOLOv8::YOLOv8(const std::string& engine_file_path) : is_running(true), result_c
             else if(param == "yc") cloud_infile >> yc;
             else if(param == "zc") cloud_infile >> zc;
             else if(param == "leida_lidigaodu") cloud_infile >> leida_lidigaodu;
+            else if(param == "bbox_scale") cloud_infile >> BBOX_SCALE;
             else{
                 ROS_FATAL("Unknown parameter in config file: %s", param.c_str());
                 std::cerr << "配置文件中存在未知参数：" << param << "，程序终止！" << std::endl;
@@ -853,10 +855,15 @@ void YOLOv8::draw_objects(const cv::Point& click_pos, const cv::Mat& image, cv::
     for(const auto& obj : objs){
         if(obj.label >= CLASS_NAMES.size() || obj.label >= COLORS.size()) continue;
         if(click_pos.x >= static_cast<int>(obj.rect.x) && click_pos.x <= static_cast<int>(obj.rect.x + obj.rect.width) && click_pos.y >= static_cast<int>(obj.rect.y) && click_pos.y <= static_cast<int>(obj.rect.y + obj.rect.height)){
-            leftTop_x = static_cast<int>(obj.rect.x);
-            leftTop_y = static_cast<int>(obj.rect.y);
-            rightBottom_x = static_cast<int>(obj.rect.x + obj.rect.width);
-            rightBottom_y = static_cast<int>(obj.rect.y + obj.rect.height);
+            // 以检测框中心为基准，按BBOX_SCALE扩大范围
+            float cx = obj.rect.x + obj.rect.width / 2.0f;
+            float cy = obj.rect.y + obj.rect.height / 2.0f;
+            float half_w = obj.rect.width / 2.0f * BBOX_SCALE;
+            float half_h = obj.rect.height / 2.0f * BBOX_SCALE;
+            leftTop_x = static_cast<int>(cx - half_w);
+            leftTop_y = static_cast<int>(cy - half_h);
+            rightBottom_x = static_cast<int>(cx + half_w);
+            rightBottom_y = static_cast<int>(cy + half_h);
             target_obj = obj;
             find_target = true;
             //ROS_INFO("Find Target Object");
